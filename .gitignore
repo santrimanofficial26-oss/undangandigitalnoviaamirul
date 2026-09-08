@@ -1,0 +1,14 @@
+# Keep only Vercel Iframe Wrapper in Git
+invitation.html
+audio-lagu-pernikahan-kita.mp3
+kode.gs
+palette/
+
+# OS & Editor Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.log
