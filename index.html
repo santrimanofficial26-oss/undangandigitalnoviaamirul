@@ -175,14 +175,15 @@
             // URL Google Apps Script Web App Utama
             const BASE_GAS_URL = "https://script.google.com/macros/s/AKfycbyO99Bnmm0Z_WXg6swRtcgDGiB-H9qmBoxsn3iRTah3-mT1wZXMa9M3nb6i3lIamOiptQ/exec";
 
-            // Ambil semua query parameter dari URL Netlify (misal: ?to=Budi+Santoso)
+            // Ambil semua query parameter dari URL (misal: ?to=Budi+Santoso)
             const currentSearch = window.location.search;
             const urlParams = new URLSearchParams(currentSearch);
-            const namaTamu = urlParams.get('to');
+            const rawNamaTamu = urlParams.get('to');
+            const namaTamu = rawNamaTamu ? decodeURIComponent(rawNamaTamu).replace(/\+/g, ' ').trim() : null;
 
             // Jika ada parameter tamu, sesuaikan title browser agar personal
             if (namaTamu) {
-                document.title = "Undangan Pernikahan: " + decodeURIComponent(namaTamu) + " | Novia & Amirul";
+                document.title = "Undangan Pernikahan: " + namaTamu + " | Novia & Amirul";
             }
 
             // Gabungkan URL GAS dengan parameter yang diteruskan
@@ -199,8 +200,13 @@
             // Set src iframe
             iframe.src = finalIframeSrc;
 
-            // Sembunyikan loader begitu iframe selesai load
+            // Sembunyikan loader begitu iframe selesai load & kirim nama tamu
             iframe.onload = function () {
+                if (namaTamu) {
+                    try {
+                        iframe.contentWindow.postMessage({ type: 'SET_GUEST_NAME', name: namaTamu }, '*');
+                    } catch (err) {}
+                }
                 setTimeout(function () {
                     splash.style.opacity = '0';
                     setTimeout(function () {
